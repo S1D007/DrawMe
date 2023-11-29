@@ -1,8 +1,14 @@
 import React, { useRef } from "react";
 import Camera from "./components/Camera";
 import Webcam from "react-webcam";
+import axios from "axios";
 
-const filter = (image: HTMLImageElement, filters: string, width: number, height: number) => {
+const filter = (
+  image: HTMLImageElement,
+  filters: string,
+  width: number,
+  height: number
+) => {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   if (ctx) {
@@ -31,7 +37,8 @@ const generateSketch = (bnw: HTMLCanvasElement, blur: HTMLCanvasElement) => {
 const App = () => {
   const [captureImage, setCaptureImage] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [sketchImageGenerated, setSketchImageGenerated] = React.useState<boolean>(false); // eslint-disable-line
+  const [sketchImageGenerated, setSketchImageGenerated] =
+    React.useState<boolean>(false); // eslint-disable-line
   const cameraRef = useRef<Webcam>(null);
 
   const capture = React.useCallback(() => {
@@ -44,28 +51,44 @@ const App = () => {
     setSketchImageGenerated(false);
   }, [setCaptureImage]);
 
-  const applyFiltersAndSketch = () => {
+  const applyFiltersAndSketch = async () => {
     if (captureImage) {
       setLoading(true);
-      const image = new Image();
-      image.src = captureImage;
+      // Convert base64 image to Blob
+      const base64Parts = captureImage.split(",");
+      const contentType = base64Parts[0].split(";")[0].split(":")[1];
+      const byteCharacters = atob(base64Parts[1]);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: contentType });
 
-      image.onload = () => {
-        const width = image.width;
-        const height = image.height;
+      // Create a File object from the Blob
+      const file = new File([blob], "image.jpeg", { type: contentType });
 
-        const bnw = filter(image, "grayscale(1)", width, height);
-        const blur = filter(image, "grayscale(1) invert(1) blur(5px)", width, height);
-
-        const sketchImg = generateSketch(bnw, blur);
-
-        // Increasing image quality using canvas.toDataURL with high-quality settings
-        const sketchDataURL = sketchImg.toDataURL("image/jpeg", 1.0); // Adjust quality (1.0 is maximum)
-
-        setCaptureImage(sketchDataURL);
-        setLoading(false);
-        setSketchImageGenerated(true);
-      };
+      const formData = new FormData();
+      formData.append("image", file);
+      const response = await axios.post(
+        "https://api.sketch.gokapturehub.com/pencil_sketch",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          params: {
+            "blur_simga": 25,
+          }
+        }
+      );
+      console.log(response);
+      const { data } = response;
+      const { processed_image_url } = data;
+      console.log(processed_image_url);
+      setCaptureImage(processed_image_url);
+      setLoading(false);
+      setSketchImageGenerated(true);
     }
   };
 
@@ -77,6 +100,13 @@ const App = () => {
       anchor.click();
     }
   };
+
+  if(loading) return (
+    <div className="w-screen h-screen flex justify-center items-center flex-col space-y-4">
+      <img src="https://www.gokapture.com/img/gokapture/favicon.png" alt="logo" className="h-36"/>
+      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
+    </div>
+  )
 
   return (
     <div className="w-screen h-screen flex justify-center flex-col items-center space-y-2">
@@ -111,7 +141,9 @@ const App = () => {
             className="cursor-pointer h-24 w-24  shadow-sm"
           />
           <img
-            onClick={sketchImageGenerated ? downloadSketch : applyFiltersAndSketch}
+            onClick={
+              sketchImageGenerated ? downloadSketch : applyFiltersAndSketch
+            }
             src={
               sketchImageGenerated
                 ? "https://cdn.icon-icons.com/icons2/903/PNG/512/download-3_icon-icons.com_69534.png"
