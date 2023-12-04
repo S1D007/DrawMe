@@ -2,7 +2,8 @@ import React, { useRef } from "react";
 import Camera from "./components/Camera";
 import Webcam from "react-webcam";
 import axios from "axios";
-
+import Logo1 from "./assets/logo.png";
+import Form from "./Form";
 const filter = (
   image: HTMLImageElement,
   filters: string,
@@ -82,28 +83,29 @@ const App = () => {
           }
         }
       );
-      console.log(response);
       const { data } = response;
       const { processed_image_url } = data;
-      console.log(processed_image_url);
       setCaptureImage(processed_image_url);
       setLoading(false);
       setSketchImageGenerated(true);
     }
   };
 
+  const [downloadImageButtonClicked, setDownloadImageButtonClicked] = React.useState<boolean>(false);
+
   const downloadSketch = () => {
     if (captureImage) {
-      const anchor = document.createElement("a");
-      anchor.href = captureImage;
-      anchor.download = "sketch_image.jpeg";
-      anchor.click();
+      setDownloadImageButtonClicked(true);
     }
   };
 
+  if(downloadImageButtonClicked){
+    return <Form image={captureImage} />
+  }
+
   if(loading) return (
     <div className="w-screen h-screen flex justify-center items-center flex-col space-y-4">
-      <img src="https://www.gokapture.com/img/gokapture/favicon.png" alt="logo" className="h-36"/>
+      <img src={Logo1} alt="logo" className="h-36"/>
       <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
     </div>
   )
@@ -111,9 +113,9 @@ const App = () => {
   return (
     <div className="w-screen h-screen flex justify-center flex-col items-center space-y-2">
       <img
-        src="https://www.gokapture.com/img/gokapture/favicon.png"
+        src={Logo1}
         alt="logo"
-        className="h-36"
+        className="h-20"
       />
       {captureImage ? (
         <img
