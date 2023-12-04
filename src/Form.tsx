@@ -96,14 +96,14 @@ const Form: React.FC<Props> = ({ image }) => {
           Submit
         </button>
       </form>
-      <img
+      <div
         onClick={()=>{
           window.location.reload()
         }}
-        src="https://cdn.iconscout.com/icon/free/png-256/free-retry-1-386755.png"
-        alt="reset"
-        className="cursor-pointer h-24 w-24  shadow-sm"
-      />
+        className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm"
+      >
+        Retry
+      </div>
       <img src={Logo2} alt="logo" className="h-28 w-auto" />
     </div>
   );

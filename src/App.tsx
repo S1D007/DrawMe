@@ -79,8 +79,8 @@ const App = () => {
             "Content-Type": "multipart/form-data",
           },
           params: {
-            "blur_simga": 25,
-          }
+            blur_simga: 25,
+          },
         }
       );
       const { data } = response;
@@ -91,7 +91,8 @@ const App = () => {
     }
   };
 
-  const [downloadImageButtonClicked, setDownloadImageButtonClicked] = React.useState<boolean>(false);
+  const [downloadImageButtonClicked, setDownloadImageButtonClicked] =
+    React.useState<boolean>(false);
 
   const downloadSketch = () => {
     if (captureImage) {
@@ -102,65 +103,88 @@ const App = () => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      setDownloadImageButtonClicked(true);
     }
   };
 
-  if(downloadImageButtonClicked){
-    return <Form image={captureImage} />
+  if (downloadImageButtonClicked) {
+    return <Form image={captureImage} />;
   }
 
-  if(loading) return (
-    <div className="w-screen h-screen flex justify-center items-center flex-col space-y-4">
-      <img src={Logo1} alt="logo" className="h-36"/>
-      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-500"></div>
-    </div>
-  )
+  if (loading)
+    return (
+      <div className="w-screen h-screen flex justify-center items-center flex-col space-y-4">
+        <img src={Logo1} alt="logo" className="h-36" />
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-500"></div>
+      </div>
+    );
+    const aspR = ()=>{
+      // check whether the device is IPad or not and it is set to potrait mode and similarly with desktop
+      const isIPad = navigator.userAgent.match(/iPad/i) != null;
+      const isDesktop = window.innerWidth > 1024;
+      const isPotrait = window.innerHeight > window.innerWidth;
+      if(isIPad){
+        return 16/9;
+      }
+      else if(isDesktop){
+        return 9/16;
+      }
+      else{
+        return 1;
+      }
+    }
 
   return (
     <div className="w-screen h-screen flex justify-center flex-col items-center space-y-2">
-      <img
-        src={Logo1}
-        alt="logo"
-        className="h-20"
-      />
+      <img src={Logo1} alt="logo" className="h-20" />
       {captureImage ? (
         <img
           src={captureImage}
           alt="capture"
           className="h-[600px] rounded-xl shadow-2xl"
         />
-      ) : (
-        <Camera cameraRef={cameraRef} facingMode="user" aspcectRatio={16 / 9} />
+      ) : ( 
+        <Camera cameraRef={cameraRef} facingMode="user" aspcectRatio={aspR()} />
       )}
 
       {!captureImage && !loading ? (
-        <img
+        <div
           onClick={capture}
-          src="https://cdn.iconscout.com/icon/free/png-256/free-camera-1809-461609.png"
-          alt="capture"
-          className="cursor-pointer h-24 w-24 absolute bottom-5 shadow-sm"
-        />
+          className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold absolute bottom-5 shadow-sm"
+        >
+          Capture
+        </div>
       ) : (
         <div className="flex justify-center absolute bottom-5 items-center flex-row space-x-5 w-full">
-          <img
-            onClick={reset}
-            src="https://cdn.iconscout.com/icon/free/png-256/free-retry-1-386755.png"
-            alt="reset"
-            className="cursor-pointer h-24 w-24  shadow-sm"
-          />
-          <img
-            onClick={
-              sketchImageGenerated ? downloadSketch : applyFiltersAndSketch
-            }
-            src={
-              sketchImageGenerated
-                ? "https://cdn.icon-icons.com/icons2/903/PNG/512/download-3_icon-icons.com_69534.png"
-                : "https://cdn-icons-png.flaticon.com/512/1/1122.png"
-            }
-            alt="reset"
-            className="cursor-pointer h-24 w-24 shadow-sm"
-          />
+          <div onClick={reset} className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm">
+            Reset
+          </div>
+          {sketchImageGenerated ? (
+            <div
+              onClick={() => {
+                setDownloadImageButtonClicked(true);
+              }}
+              className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm"
+            >
+              {"Next"}
+            </div>
+          ) : (
+            <>
+              <div
+                onClick={() => {
+                  applyFiltersAndSketch();
+                }}
+                className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm"
+              >
+                {"Next"}
+              </div>
+              <div
+                onClick={downloadSketch}
+                className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm"
+              >
+                Download
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>
