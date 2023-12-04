@@ -124,7 +124,7 @@ const App = () => {
           className="h-[600px] rounded-xl shadow-2xl"
         />
       ) : (
-        <Camera cameraRef={cameraRef} facingMode="user" aspcectRatio={9 / 16} />
+        <Camera cameraRef={cameraRef} facingMode="user" aspcectRatio={16 / 9} />
       )}
 
       {!captureImage && !loading ? (
