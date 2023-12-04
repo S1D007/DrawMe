@@ -96,6 +96,14 @@ const Form: React.FC<Props> = ({ image }) => {
           Submit
         </button>
       </form>
+      <img
+        onClick={()=>{
+          window.location.reload()
+        }}
+        src="https://cdn.iconscout.com/icon/free/png-256/free-retry-1-386755.png"
+        alt="reset"
+        className="cursor-pointer h-24 w-24  shadow-sm"
+      />
       <img src={Logo2} alt="logo" className="h-28 w-auto" />
     </div>
   );

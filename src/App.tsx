@@ -95,6 +95,13 @@ const App = () => {
 
   const downloadSketch = () => {
     if (captureImage) {
+      // add the functionality to download the sketch//
+      const link = document.createElement("a");
+      link.href = captureImage;
+      link.download = "sketch.png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
       setDownloadImageButtonClicked(true);
     }
   };
@@ -106,7 +113,7 @@ const App = () => {
   if(loading) return (
     <div className="w-screen h-screen flex justify-center items-center flex-col space-y-4">
       <img src={Logo1} alt="logo" className="h-36"/>
-      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
+      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-500"></div>
     </div>
   )
 
