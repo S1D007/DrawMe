@@ -145,7 +145,7 @@ const App = () => {
         <img
           src={captureImage}
           alt="capture"
-          className="h-[600px] rounded-xl shadow-2xl"
+          className="max-h-[600px] rounded-xl shadow-2xl"
         />
       ) : (
         <Camera cameraRef={cameraRef} facingMode="user" aspcectRatio={aspR()} />
