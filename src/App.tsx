@@ -140,7 +140,7 @@ const App = () => {
 
   return (
     <div className="w-screen h-screen flex justify-center flex-col items-center space-y-2">
-      <img src={Logo1} alt="logo" className="h-16" />
+      <img src={Logo1} alt="logo" className="h-14" />
       {captureImage ? (
         <img
           src={captureImage}
