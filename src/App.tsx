@@ -134,7 +134,7 @@ const App = () => {
     } else if (isIphone && isPotrait) {
       return 16 / 9;
     } else {
-      return 1;
+      return 16/9;
     }
   };
 
