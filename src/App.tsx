@@ -128,11 +128,11 @@ const App = () => {
     const isIphone = navigator.userAgent.match(/iPhone/i) != null;
     const isPotrait = window.innerHeight > window.innerWidth;
     if (isIPad) {
-      return 9 / 16;
+      return 16 / 9;
     } else if (isDesktop) {
       return 9 / 16;
     } else if (isIphone && isPotrait) {
-      return 9 / 16;
+      return 16/9;
     } else {
       return 1;
     }
