@@ -132,7 +132,7 @@ const App = () => {
     } else if (isDesktop) {
       return 9 / 16;
     } else if (isIphone && isPotrait) {
-      return 16/9;
+      return 16 / 9;
     } else {
       return 1;
     }
