@@ -42,7 +42,7 @@ const Form: React.FC<Props> = ({ image }) => {
 
   return (
     <div className="w-full h-screen flex justify-center items-center flex-col space-y-2">
-      <img src={Logo1} alt="logo" className="h-20" />
+      <img src={Logo1} alt="logo" className="h-16" />
       <form
         className="w-96 p-6 bg-white shadow-md rounded-lg justify-center items-center"
         onSubmit={handleSubmit}

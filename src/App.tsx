@@ -94,16 +94,20 @@ const App = () => {
   const [downloadImageButtonClicked, setDownloadImageButtonClicked] =
     React.useState<boolean>(false);
 
-  const downloadSketch = () => {
+  const downloadSketch = async () => {
     if (captureImage) {
       // add the functionality to download the sketch//
+      const response = await axios.get(captureImage, {
+        responseType: "blob",
+      });
+      const blob = new Blob([response.data], { type: "image/jpeg" });
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.href = captureImage;
-      link.download = "sketch.png";
-      document.body.appendChild(link);
+      link.href = url;
+      link.download = "sketch.jpeg";
       link.click();
-      document.body.removeChild(link);
-    }
+      URL.revokeObjectURL(url);
+    } 
   };
 
   if (downloadImageButtonClicked) {
@@ -113,60 +117,72 @@ const App = () => {
   if (loading)
     return (
       <div className="w-screen h-screen flex justify-center items-center flex-col space-y-4">
-        <img src={Logo1} alt="logo" className="h-36" />
+        <img src={Logo1} alt="logo" className="h-16" />
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-500"></div>
       </div>
     );
-    const aspR = ()=>{
-      // check whether the device is IPad or not and it is set to potrait mode and similarly with desktop
-      const isIPad = navigator.userAgent.match(/iPad/i) != null;
-      const isDesktop = window.innerWidth > 1024;
-      const isPotrait = window.innerHeight > window.innerWidth;
-      if(isIPad){
-        return 16/9;
-      }
-      else if(isDesktop){
-        return 9/16;
-      }
-      else{
-        return 1;
-      }
+  const aspR = () => {
+    // check whether the device is IPad or not and it is set to potrait mode and similarly with desktop
+    const isIPad = navigator.userAgent.match(/iPad/i) != null;
+    const isDesktop = window.innerWidth > 1024;
+    const isIphone = navigator.userAgent.match(/iPhone/i) != null;
+    const isPotrait = window.innerHeight > window.innerWidth;
+    if (isIPad) {
+      return 9 / 16;
+    } else if (isDesktop) {
+      return 9 / 16;
+    } else if (isIphone && isPotrait) {
+      return 9 / 16;
+    } else {
+      return 1;
     }
+  };
 
   return (
     <div className="w-screen h-screen flex justify-center flex-col items-center space-y-2">
-      <img src={Logo1} alt="logo" className="h-20" />
+      <img src={Logo1} alt="logo" className="h-16" />
       {captureImage ? (
         <img
           src={captureImage}
           alt="capture"
           className="h-[600px] rounded-xl shadow-2xl"
         />
-      ) : ( 
+      ) : (
         <Camera cameraRef={cameraRef} facingMode="user" aspcectRatio={aspR()} />
       )}
 
       {!captureImage && !loading ? (
         <div
           onClick={capture}
-          className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold absolute bottom-5 shadow-sm"
+          className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm"
         >
           Capture
         </div>
       ) : (
         <div className="flex justify-center absolute bottom-5 items-center flex-row space-x-5 w-full">
-          <div onClick={reset} className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm">
+          <div
+            onClick={reset}
+            className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm"
+          >
             Reset
           </div>
           {sketchImageGenerated ? (
-            <div
-              onClick={() => {
-                setDownloadImageButtonClicked(true);
-              }}
-              className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm"
-            >
-              {"Next"}
-            </div>
+            <>
+              <div
+                onClick={downloadSketch}
+                className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm"
+              >
+                Download
+              </div>
+              <div
+                onClick={() => {
+                  setDownloadImageButtonClicked(true);
+                }}
+                className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm"
+              >
+                {"Next"}
+              </div>
+            </>
           ) : (
             <>
               <div
