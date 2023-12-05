@@ -159,7 +159,7 @@ const App = () => {
           Capture
         </div>
       ) : (
-        <div className="flex justify-center absolute bottom-5 items-center flex-row space-x-5 w-full">
+        <div className="flex justify-center  items-center flex-row space-x-5 w-full">
           <div
             onClick={reset}
             className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm"
