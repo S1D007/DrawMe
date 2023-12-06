@@ -43,7 +43,7 @@ const App = () => {
       const formData = new FormData();
       formData.append("image", file);
       const response = await axios.post(
-        "https://api-sketch.gokapturehub.com/pencil_sketch",
+        "https://api-sketch.gokapturehub.com/pencil_sketch?blur_simga=10",
         formData,
         {
           headers: {
