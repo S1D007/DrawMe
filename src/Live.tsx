@@ -36,7 +36,7 @@ const Live = () => {
   const scrollToBottom = () => {
     if (containerRef.current) {
       containerRef.current.scrollTo({
-        top: containerRef.current.scrollHeight,
+        left: containerRef.current.scrollWidth,
         behavior: "smooth",
       });
     }
