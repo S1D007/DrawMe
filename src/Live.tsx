@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 import Logo1 from "./assets/logo.png";
+
 const socket = io("https://sketch-api.gokapturehub.com", {
   transports: ["websocket"],
 });
+
 type Data = {
   name: string;
   image: string;
@@ -14,32 +16,35 @@ type Data = {
 
 const Live = () => {
   const [data, setData] = React.useState<Data[]>([]);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     socket.on("result", (data) => {
       setData((prev) => [...prev, data]);
-      scrollToBottom();
+      scrollToRightEnd();
     });
   }, []);
 
   useEffect(() => {
     const getData = async () => {
-      const response = await axios.get(
-        "https://sketch-api.gokapturehub.com/users"
-      );
-      const { data } = response;
-      setData(data);
+      try {
+        const response = await axios.get(
+          "https://sketch-api.gokapturehub.com/users"
+        );
+        const { data } = response;
+        setData(data);
+        scrollToRightEnd();
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
     getData();
-    scrollToBottom()
   }, []);
-  const scrollToBottom = () => {
+
+  const scrollToRightEnd = () => {
     if (containerRef.current) {
-      containerRef.current.scrollTo({
-        left: containerRef.current.scrollWidth,
-        behavior: "smooth",
-      });
+      const container = containerRef.current;
+      container.scrollLeft = container.scrollWidth - container.clientWidth;
     }
   };
 
@@ -47,15 +52,16 @@ const Live = () => {
     <div className="w-screen h-full p-2">
       <img src={Logo1} alt="logo" className="h-14" />
       <div
-        className="min-w-full flex flex-row gap-4 p-2 overflow-x-auto  h-full"
+        className="w-full flex gap-4 p-2 overflow-x-auto h-full"
         ref={containerRef}
+        style={{ whiteSpace: "nowrap" }}
       >
         {data.map((item, index) => (
-          <div key={index} className="flex flex-col items-center min-w-[200px]">
+          <div key={index} className="flex flex-col items-center min-w-[250px]">
             <img
               src={item.image}
               alt={item.name}
-              className="min-h-96 object-cover"
+              className="h-96 object-cover"
             />
             <p className="text-center mt-2">{item.name}</p>
           </div>
