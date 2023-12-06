@@ -114,7 +114,7 @@ const App = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex justify-center flex-col items-center space-y-2">
+    <div className="w-screen h-screen flex justify-center flex-col items-center space-y-4">
       <img src={Logo1} alt="logo" className="h-14" />
       {captureImage ? (
         <img
@@ -168,12 +168,12 @@ const App = () => {
               >
                 {"Next"}
               </div>
-              <div
+              {/* <div
                 onClick={downloadSketch}
                 className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm"
               >
                 Download
-              </div>
+              </div> */}
             </>
           )}
         </div>
