@@ -13,40 +13,55 @@ type Data = {
 };
 
 const Live = () => {
-    const [data, setData] = React.useState<Data[]>([]);
-    useEffect(() => {
-        socket.on("result", (data) => {
-            setData((prev) => [...prev, data]);
-        });
-    }, []);
-    useEffect(() => {
-        const getData = async () => {
-            const response = await axios.get(
-                "https://sketch-api.gokapturehub.com/users"
-            );
-            const { data } = response;
-            setData(data);
-        };
-        getData();
-    }, []);
+  const [data, setData] = React.useState<Data[]>([]);
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
-    return (
-        <div className="w-screen h-full p-2">
-            <img src={Logo1} alt="logo" className="h-14" />
-            <div className="flex flex-wrap flex-row gap-4 p-2">
-                {data.map((item, index) => (
-                    <div key={index} className="flex flex-col items-center">
-                        <img
-                            src={item.image}
-                            alt={item.name}
-                            className="h-96 object-cover"
-                        />
-                        <p className="text-center mt-2">{item.name}</p>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
+  useEffect(() => {
+    socket.on("result", (data) => {
+      setData((prev) => [...prev, data]);
+      scrollToBottom();
+    });
+  }, []);
+
+  useEffect(() => {
+    const getData = async () => {
+      const response = await axios.get(
+        "https://sketch-api.gokapturehub.com/users"
+      );
+      const { data } = response;
+      setData(data);
+    };
+    getData();
+  }, []);
+  const scrollToBottom = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({
+        top: containerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  return (
+    <div className="w-screen h-full p-2">
+      <img src={Logo1} alt="logo" className="h-14" />
+      <div
+        className="min-w-full flex flex-row gap-4 p-2 overflow-x-auto  h-full"
+        ref={containerRef}
+      >
+        {data.map((item, index) => (
+          <div key={index} className="flex flex-col items-center min-w-[200px]">
+            <img
+              src={item.image}
+              alt={item.name}
+              className="min-h-96 object-cover"
+            />
+            <p className="text-center mt-2">{item.name}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default Live;
