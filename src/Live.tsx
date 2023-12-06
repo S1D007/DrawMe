@@ -39,6 +39,7 @@ const Live = () => {
       }
     };
     getData();
+    scrollToRightEnd();
   }, []);
 
   const scrollToRightEnd = () => {
