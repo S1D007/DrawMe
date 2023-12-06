@@ -32,6 +32,7 @@ const Live = () => {
       setData(data);
     };
     getData();
+    scrollToBottom()
   }, []);
   const scrollToBottom = () => {
     if (containerRef.current) {
