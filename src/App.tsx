@@ -6,6 +6,9 @@ import Logo1 from "./assets/logo.png";
 import Form from "./Form";
 import Live from "./Live";
 const App = () => {
+  const [facingMode, setFacingMode] = React.useState<"user" | "environment">(
+    "user"
+  );
   const [captureImage, setCaptureImage] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [live, setLive] = React.useState<boolean>(false); // eslint-disable-line
@@ -124,12 +127,16 @@ const App = () => {
           className="max-h-[600px] rounded-xl shadow-2xl"
         />
       ) : (
-        <Camera cameraRef={cameraRef} facingMode="user" aspcectRatio={aspR()} />
+        <Camera
+          cameraRef={cameraRef}
+          facingMode={facingMode}
+          aspcectRatio={aspR()}
+        />
       )}
 
       {!captureImage && !loading ? (
         <>
-        <div className="flex justify-center items-center flex-row space-x-5 w-full">
+          <div className="flex justify-center items-center flex-row space-x-5 w-full">
             <div
               onClick={() => {
                 setLive(true);
@@ -138,14 +145,48 @@ const App = () => {
             >
               Live
             </div>
-          <div
-            onClick={capture}
-            className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm"
-          >
-            Capture
+            <div
+              onClick={capture}
+              className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm"
+            >
+              Capture
+            </div>
+            {/* for live button */}
           </div>
-          {/* for live button */}
-          
+          <div className="flex justify-center items-center gap-1 flex-col">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onload = (e) => {
+                    const dataURL = e.target?.result;
+                    setCaptureImage(dataURL as string);
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
+              className="hidden"
+              id="imageUploadInput"
+            />
+            <label
+              htmlFor="imageUploadInput"
+              className="mt-4 py-2 px-4 bg-gray-700 text-white rounded-3xl text-xl font-semibold relative overflow-hidden cursor-pointer"
+            >
+              Upload Image
+            </label>
+            <div className="flex justify-center items-center flex-row gap-5">
+              <button
+                className="mt-4 py-2 px-4 bg-gray-700 text-white rounded-3xl text-xl font-semibold relative overflow-hidden"
+                onClick={() => {
+                  setFacingMode((prev)=> prev === "user" ? "environment" : "user");
+                }}
+              >
+                Toggle Camera
+              </button>
+            </div>
           </div>
         </>
       ) : (

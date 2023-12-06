@@ -18,6 +18,9 @@ const Camera = (data: CamerProps) => {
       videoConstraints={{
         facingMode: data.facingMode,
         aspectRatio: data.aspcectRatio,
+        frameRate: 60,
+        // width: 1667,
+        // height: 2500,
       }}
     />
   );
