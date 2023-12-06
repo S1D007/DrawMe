@@ -39,7 +39,7 @@ const Live = () => {
                         <img
                             src={item.image}
                             alt={item.name}
-                            className="h-60 object-cover"
+                            className="h-96 object-cover"
                         />
                         <p className="text-center mt-2">{item.name}</p>
                     </div>
