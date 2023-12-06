@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useLayoutEffect } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 import Logo1 from "./assets/logo.png";
@@ -19,9 +19,8 @@ const Live = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    socket.on("result", (data) => {
-      setData((prev) => [...prev, data]);
-      scrollToRightEnd();
+    socket.on("result", (newData) => {
+      setData((prev) => [...prev, newData]);
     });
   }, []);
 
@@ -33,14 +32,16 @@ const Live = () => {
         );
         const { data } = response;
         setData(data);
-        scrollToRightEnd();
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     getData();
-    scrollToRightEnd();
   }, []);
+
+  useLayoutEffect(() => {
+    scrollToRightEnd();
+  }, [data]);
 
   const scrollToRightEnd = () => {
     if (containerRef.current) {
@@ -63,6 +64,7 @@ const Live = () => {
               src={item.image}
               alt={item.name}
               className="h-96 object-cover"
+              onLoad={scrollToRightEnd} // Trigger scroll when image is loaded
             />
             <p className="text-center mt-2">{item.name}</p>
           </div>
