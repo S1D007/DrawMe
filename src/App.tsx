@@ -8,6 +8,7 @@ import Live from "./Live";
 const App = () => {
   const [captureImage, setCaptureImage] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [live, setLive] = React.useState<boolean>(false); // eslint-disable-line
   const [sketchImageGenerated, setSketchImageGenerated] =
     React.useState<boolean>(false); // eslint-disable-line
   const cameraRef = useRef<Webcam>(null);
@@ -81,7 +82,7 @@ const App = () => {
   };
   // if the url includes live then render the live component
   // console.log(window.location.href)
-  if (window.location.href.includes("live")) {
+  if (live) {
     return <Live />;
   }
 
@@ -127,12 +128,26 @@ const App = () => {
       )}
 
       {!captureImage && !loading ? (
-        <div
-          onClick={capture}
-          className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm"
-        >
-          Capture
-        </div>
+        <>
+        <div className="flex justify-center items-center flex-row space-x-5 w-full">
+            <div
+              onClick={() => {
+                setLive(true);
+              }}
+              className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm"
+            >
+              Live
+            </div>
+          <div
+            onClick={capture}
+            className="text-white bg-black rounded-full text-xl cursor-pointer px-4 py-2 font-semibold shadow-sm"
+          >
+            Capture
+          </div>
+          {/* for live button */}
+          
+          </div>
+        </>
       ) : (
         <div className="flex justify-center  items-center flex-row space-x-5 w-full">
           <div
