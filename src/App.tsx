@@ -4,37 +4,7 @@ import Webcam from "react-webcam";
 import axios from "axios";
 import Logo1 from "./assets/logo.png";
 import Form from "./Form";
-const filter = (
-  image: HTMLImageElement,
-  filters: string,
-  width: number,
-  height: number
-) => {
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  if (ctx) {
-    canvas.width = width;
-    canvas.height = height;
-    ctx.filter = filters;
-    ctx.drawImage(image, 0, 0, width, height);
-  }
-  return canvas;
-};
-
-const generateSketch = (bnw: HTMLCanvasElement, blur: HTMLCanvasElement) => {
-  const canvas: any = document.createElement("canvas");
-  canvas.width = bnw.width;
-  canvas.height = bnw.height;
-  canvas.__skipFilterPatch = true; // add this for Safari iOS
-  const ctx = canvas.getContext("2d");
-  if (ctx) {
-    ctx.drawImage(bnw, 0, 0, canvas.width, canvas.height);
-    ctx.globalCompositeOperation = "color-dodge";
-    ctx.drawImage(blur, 0, 0, canvas.width, canvas.height);
-  }
-  return canvas;
-};
-
+import Live from "./Live";
 const App = () => {
   const [captureImage, setCaptureImage] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -107,8 +77,13 @@ const App = () => {
       link.download = "sketch.jpeg";
       link.click();
       URL.revokeObjectURL(url);
-    } 
+    }
   };
+  // if the url includes live then render the live component
+  // console.log(window.location.href)
+  if (window.location.href.includes("live")) {
+    return <Live />;
+  }
 
   if (downloadImageButtonClicked) {
     return <Form image={captureImage} />;
@@ -134,7 +109,7 @@ const App = () => {
     } else if (isIphone && isPotrait) {
       return 16 / 9;
     } else {
-      return 16/9;
+      return 16 / 9;
     }
   };
 
